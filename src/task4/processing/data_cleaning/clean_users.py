@@ -21,8 +21,10 @@ def fix_address_formatting(users_df: pd.DataFrame) -> pd.DataFrame:
 
 
 def extract_f_name_and_surname(name: str) -> str:
+    if pd.isna(name):
+        return pd.NA
     parsed_name = parse(name)
-    return parsed_name.given + " " + parsed_name.family
+    return f"{parsed_name.given} {parsed_name.family}".strip()
 
 
 def fix_names_formatting(users_df: pd.DataFrame) -> pd.DataFrame:

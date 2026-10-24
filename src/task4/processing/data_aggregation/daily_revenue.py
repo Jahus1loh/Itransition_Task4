@@ -10,4 +10,4 @@ def compute_daily_revenue(orders_df: pd.DataFrame) -> pd.DataFrame:
 def find_5_highest_revenues(orders_df: pd.DataFrame) -> pd.DataFrame:
     daily_revenue = compute_daily_revenue(orders_df)
     daily_revenue = daily_revenue.sort_values(ascending=False)
-    print(daily_revenue.head(5))
+    print(daily_revenue.head())

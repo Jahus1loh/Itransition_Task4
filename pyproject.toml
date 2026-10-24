@@ -15,6 +15,7 @@ dependencies = [
     "price-parser>=0.5.1",
     "pyarrow>=26.0.0",
     "pyyaml>=6.0.3",
+    "scipy>=1.18.1",
 ]
 
 [project.scripts]
