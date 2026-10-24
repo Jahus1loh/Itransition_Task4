@@ -2,7 +2,7 @@ import pandas as pd
 
 
 def compute_daily_revenue(orders_df: pd.DataFrame) -> pd.DataFrame:
-    grouped = orders_df.groupby(["year", "month", "day"])
+    grouped = orders_df.groupby("date")
     daily_revenue = grouped["paid_price"].sum()
     return daily_revenue
 

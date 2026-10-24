@@ -70,6 +70,8 @@ def add_timestamp_parts(orders_df: pd.DataFrame) -> pd.DataFrame:
     orders_df["day"] = orders_df["timestamp"].dt.day
     orders_df["month"] = orders_df["timestamp"].dt.month
     orders_df["year"] = orders_df["timestamp"].dt.year
+    orders_df["date"] = pd.to_datetime(orders_df[["year","month","day"]])
+
 
     return orders_df
 
