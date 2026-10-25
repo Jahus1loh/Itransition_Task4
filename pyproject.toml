@@ -11,6 +11,7 @@ dependencies = [
     "fastparquet>=2026.9.0",
     "llama-index>=0.10.45.post1",
     "llama-index-experimental>=0.2.0",
+    "llama-index-llms-google-genai>=0.2.6",
     "llama-index-llms-ollama>=0.2.2",
     "matplotlib>=3.11.2",
     "nameparser>=2.5.0",
