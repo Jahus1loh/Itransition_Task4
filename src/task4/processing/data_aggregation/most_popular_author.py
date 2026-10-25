@@ -11,7 +11,7 @@ def join_books_and_orders_df(orders_df: pd.DataFrame, books_df: pd.DataFrame):
     joined_df = orders_df.merge(
         books_df,
         left_on="book_id",
-        right_on="id",
+        right_on="book_id",
         how="left"
     )
     return joined_df

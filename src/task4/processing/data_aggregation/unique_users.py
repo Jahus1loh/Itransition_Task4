@@ -34,7 +34,7 @@ def findComponents(graph) -> list[int]:
 
 def identifyDuplicates(users_df: pd.DataFrame) -> list[int]:
     users_df = users_df.reset_index(drop=True)
-    cols = users_df.columns.drop("id")
+    cols = users_df.columns.drop("user_id")
 
     source, dest = buildEdges(users_df, cols)
     graph = buildGraph(users_df, source, dest)

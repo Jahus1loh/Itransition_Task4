@@ -6,6 +6,7 @@ def clean_users_data(users_df: pd.DataFrame) -> pd.DataFrame:
     users_df = fix_address_formatting(users_df)
     users_df = fix_names_formatting(users_df)
     users_df = fix_phone_formatting(users_df)
+    users_df = rename_users_columns(users_df)
     return users_df
 
 
@@ -36,5 +37,12 @@ def fix_names_formatting(users_df: pd.DataFrame) -> pd.DataFrame:
 def fix_phone_formatting(users_df: pd.DataFrame) -> pd.DataFrame:
     users_df["phone"] = (
         users_df["phone"].astype("string").str.replace(r"\D", "", regex=True)
+    )
+    return users_df
+
+
+def rename_users_columns(users_df: pd.DataFrame) -> pd.DataFrame:
+    users_df = users_df.rename(
+        columns={"id": "user_id"}
     )
     return users_df
