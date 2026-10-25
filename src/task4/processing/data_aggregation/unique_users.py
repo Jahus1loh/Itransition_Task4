@@ -5,15 +5,6 @@ import pandas as pd
 from scipy.sparse import coo_matrix
 from scipy.sparse.csgraph import connected_components
 
-# def find_unique_users(users_df: pd.DataFrame) -> pd.DataFrame:
-#     return deduplicate_users_df(users_df).shape[0]
-
-
-# def get_users_df_cols_without_id(users_df: pd.DataFrame) -> Sequence[str]:
-#     all_cols = users_df.columns
-#     id_col_location = all_cols.get_loc("id")
-#     return all_cols.delete(id_col_location)
-
 
 def buildEdges(
     users_df: pd.DataFrame, cols: pd.Index

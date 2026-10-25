@@ -40,8 +40,9 @@ def fix_names_formatting(author_names: str) -> str:
         fixed_author_names.append(
             extract_f_name_and_surname(name)
         )
-    return ", ".join(fixed_author_names)
+    return ", ".join(sorted(fixed_author_names))
 
 def normalize_author_names(books_df: pd.DataFrame) -> pd.DataFrame:
     books_df["author"] = books_df["author"].apply(fix_names_formatting)
+    
     return books_df

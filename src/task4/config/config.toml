@@ -1,8 +1,8 @@
 [input_data.yaml]
-path = "src/task4/input_data/STORE1/books.yaml"
+path = "src/task4/input_data/STORE$/books.yaml"
 
 [input_data.parquet]
-path = "src/task4/input_data/STORE1/orders.parquet"
+path = "src/task4/input_data/STORE$/orders.parquet"
 
 [input_data.csv]
-path = "src/task4/input_data/STORE1/users.csv"
+path = "src/task4/input_data/STORE$/users.csv"
