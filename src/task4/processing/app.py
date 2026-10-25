@@ -1,8 +1,7 @@
 import pandas as pd
 import streamlit as st
-from processing.process_data import compute_metrics
-from processing.nlm_processing.query_engine import create_llm
 from processing.nlm_processing.nl_router import build_query_router
+from processing.process_data import compute_metrics
 
 ITERATIONS = range(1, 6)
 

@@ -1,6 +1,5 @@
 import pandas as pd
 import streamlit as st
-from processing.data_aggregation.create_revenue_plot import create_revenue_plot
 from processing.data_aggregation.daily_revenue import compute_daily_revenue
 from processing.data_aggregation.most_popular_author import find_most_popular_author
 from processing.data_aggregation.top_customer import find_top_spender_user_ids
