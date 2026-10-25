@@ -26,7 +26,7 @@ def build_top_days_table(daily: pd.Series, n: int = 5) -> pd.DataFrame:
 
 
 def select_iteration() -> int:
-    return st.sidebar.selectbox("Dataset iteration", list(ITERATIONS))
+    return st.sidebar.selectbox("Store number", list(ITERATIONS))
 
 
 @st.cache_resource
@@ -102,7 +102,7 @@ def render_ask_tab(iteration: int) -> None:
     st.subheader(f"Ask questions about dataset {iteration}")
     messages = get_chat_messages(iteration)
     render_chat_history(messages)
-    question = st.chat_input("Ask about books, orders, or users...")
+    question = st.chat_input("Ask about books, orders, or users")
     if question:
         handle_question(iteration, question, messages)
 
