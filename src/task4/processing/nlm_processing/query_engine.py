@@ -4,15 +4,7 @@ from llama_index.core.tools import QueryEngineTool
 from llama_index.experimental.query_engine import PandasQueryEngine
 from llama_index.llms.google_genai import GoogleGenAI
 
-PANDAS_INSTRUCTIONS = """
-Answer the user's question using the DataFrame named df.
-Use only existing columns.
-Generate one valid Pandas expression.
-Do not modify the DataFrame.
-"""
-
 PANDAS_OPTIONS = {
-    "instruction_str": PANDAS_INSTRUCTIONS,
     "verbose": False,
     "synthesize_response": True,
 }
@@ -48,12 +40,26 @@ def create_llm() -> GoogleGenAI:
     )
 
 
-def create_engine(df: pd.DataFrame, llm: GoogleGenAI) -> PandasQueryEngine:
-    return PandasQueryEngine(df=df, llm=llm, **PANDAS_OPTIONS)
+def create_engine(df: pd.DataFrame, llm: GoogleGenAI, name: str) -> PandasQueryEngine:
+    instructions = f"""
+    The DataFrame is named df.
+    Dataset: {name}
+    Available columns: {list(df.columns)}
+
+    Use only the listed columns. Never invent column names.
+    unit_price means the price per unit in an order record.
+    paid_price means the recorded total paid amount.
+    Count buyers using the number of unique user_id values.
+    If a required column does not exist, explain the limitation.
+    Return one valid pandas expression.
+    """
+    return PandasQueryEngine(
+        df=df, llm=llm, instruction_str=instructions**PANDAS_OPTIONS
+    )
 
 
 def create_engines(frames: dict, llm: GoogleGenAI) -> dict:
-    return {name: create_engine(df, llm) for name, df in frames.items()}
+    return {name: create_engine(df, llm, name) for name, df in frames.items()}
 
 
 def create_query_tools(engines: dict) -> list:
