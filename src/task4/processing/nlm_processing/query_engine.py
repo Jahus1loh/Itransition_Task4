@@ -1,8 +1,7 @@
 import pandas as pd
-import streamlit as st
 from llama_index.core.tools import QueryEngineTool
 from llama_index.experimental.query_engine import PandasQueryEngine
-from llama_index.llms.google_genai import GoogleGenAI
+from llama_index.llms.ollama import Ollama
 
 PANDAS_INSTRUCTIONS = """
 Answer the user's question using the DataFrame named df.
@@ -40,19 +39,15 @@ TOOL_DESCRIPTIONS = {
 }
 
 
-def create_llm() -> GoogleGenAI:
-    api_key = st.secrets["GEMINI_API_KEY"]
-    return GoogleGenAI(
-        model="gemini-3.8-flash",
-        api_key=api_key,
-    )
+def create_llm() -> Ollama:
+    return Ollama(model="llama3.2", request_timeout=120.0)
 
 
-def create_engine(df: pd.DataFrame, llm: GoogleGenAI) -> PandasQueryEngine:
+def create_engine(df: pd.DataFrame, llm: Ollama) -> PandasQueryEngine:
     return PandasQueryEngine(df=df, llm=llm, **PANDAS_OPTIONS)
 
 
-def create_engines(frames: dict, llm: GoogleGenAI) -> dict:
+def create_engines(frames: dict, llm: Ollama) -> dict:
     return {name: create_engine(df, llm) for name, df in frames.items()}
 
 
