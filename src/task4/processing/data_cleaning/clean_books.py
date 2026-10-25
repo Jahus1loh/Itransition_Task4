@@ -9,6 +9,7 @@ def clean_books_data(books_df: pd.DataFrame) -> pd.DataFrame:
     books_df = fix_books_data_types(books_df)
     books_df = handle_missing_publishers(books_df)
     books_df = normalize_author_names(books_df)
+    books_df = rename_books_columns(books_df)
     return books_df
 
 
@@ -27,9 +28,11 @@ def handle_missing_publishers(books_df: pd.DataFrame) -> pd.DataFrame:
     books_df["publisher"] = books_df["publisher"].fillna("Unknown")
     return books_df
 
+
 def extract_f_name_and_surname(name: str) -> str:
     parsed_name = parse(name)
     return parsed_name.given + " " + parsed_name.family
+
 
 def fix_names_formatting(author_names: str) -> str:
     fixed_author_names: Sequence[str] = []
@@ -37,12 +40,20 @@ def fix_names_formatting(author_names: str) -> str:
         return extract_f_name_and_surname(author_names)
 
     for name in author_names.split(","):
-        fixed_author_names.append(
-            extract_f_name_and_surname(name)
-        )
+        fixed_author_names.append(extract_f_name_and_surname(name))
     return ", ".join(sorted(fixed_author_names))
+
 
 def normalize_author_names(books_df: pd.DataFrame) -> pd.DataFrame:
     books_df["author"] = books_df["author"].apply(fix_names_formatting)
-    
+    return books_df
+
+
+def rename_books_columns(books_df: pd.DataFrame) -> pd.DataFrame:
+    books_df = books_df.rename(
+        columns={
+            "id": "book_id",
+            "year": "book_year",
+        }
+    )
     return books_df

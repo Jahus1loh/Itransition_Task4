@@ -12,28 +12,49 @@ from processing.data_cleaning.clean_users import clean_users_data
 from processing.load_data import read_csv, read_parquet, read_yaml
 
 
-def load_data(iteration: int) -> tuple[pd.DataFrame]:
+def load_data(iteration: int) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     books_df = read_yaml(iteration)
     orders_df = read_parquet(iteration)
     users_df = read_csv(iteration)
     return (books_df, orders_df, users_df)
 
 
-def clean_data(iteration: int) -> tuple[pd.DataFrame]:
+def merge_all_df(
+    books_df: pd.DataFrame, orders_df: pd.DataFrame, users_df: pd.DataFrame
+) -> pd.DataFrame:
+    merged_df = orders_df.merge(
+        users_df,
+        on="user_id",
+        how="left",
+        validate="many_to_one",
+    ).merge(
+        books_df,
+        on="book_id",
+        how="left",
+        validate="many_to_one",
+    )
+
+    return merged_df
+
+
+def clean_data(iteration: int) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     books_df, orders_df, users_df = load_data(iteration)
     books_df = clean_books_data(books_df)
     orders_df = clean_orders_data(orders_df)
     users_df = clean_users_data(users_df)
+
     books_df.to_csv("cleaned_books.csv")
     orders_df.to_csv("cleaned_orders.csv")
     users_df.to_csv("cleaned_users.csv")
+
+
     return books_df, orders_df, users_df
 
 
-def compute_metrics(iteration: int) -> None:
+def compute_metrics(iteration: int) -> dict[str, object]:
     books_df, orders_df, users_df = clean_data(iteration)
     best_buyer_df, best_total = find_top_spender_user_ids(users_df, orders_df)
-    
+
     return {
         "daily_revenue": compute_daily_revenue(orders_df),
         "n_users": find_unique_users(users_df),
@@ -41,4 +62,8 @@ def compute_metrics(iteration: int) -> None:
         "top_authors": find_most_popular_author(orders_df, books_df),
         "best_buyer_records": best_buyer_df,
         "best_buyer_total": best_total,
+        "users_df": users_df,
+        "orders_df": orders_df,
+        "books_df": books_df,
+        "merged_df": merge_all_df(books_df, orders_df, users_df)
     }
