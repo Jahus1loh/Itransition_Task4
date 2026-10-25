@@ -54,7 +54,7 @@ def create_engine(df: pd.DataFrame, llm: GoogleGenAI, name: str) -> PandasQueryE
     Return one valid pandas expression.
     """
     return PandasQueryEngine(
-        df=df, llm=llm, instruction_str=instructions**PANDAS_OPTIONS
+        df=df, llm=llm, instruction_str=instructions, **PANDAS_OPTIONS
     )
 
 
