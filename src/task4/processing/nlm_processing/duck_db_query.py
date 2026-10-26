@@ -53,10 +53,10 @@ def generate_sql(service: dict, question: str) -> str:
         messages=[{"role": "user", "content": final_prompt}],
         temperature=0,
     )
-    if not response.text:
+    if not response.choices[0].message.content:
         raise ValueError("The model didnt return SQL")
     return re.sub(
-        r"^```(?:sql)?|```$", "", response.text.strip(), flags=re.IGNORECASE
+        r"^```(?:sql)?|```$", "", response.choices[0].message.content.strip(), flags=re.IGNORECASE
     ).strip()
 
 
