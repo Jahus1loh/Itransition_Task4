@@ -19,6 +19,14 @@ with Path("src/task4/config/config.toml").open("rb") as f:
 api_key = st.secrets["GEMINI_API_KEY"]
 
 
+def build_schema(frames: dict) -> str:
+    columns = [
+        f"{name}: {', '.join(map(str, frames[name].columns))}" for name in table_names
+    ]
+    joins = "Join orders.book_id = books.book_id; orders.user_id = users.user_id."
+    return "\n".join([*columns, joins])
+
+
 def create_service(frames: dict) -> dict:
     connection = duckdb.connect(":memory:")
     for name in table_names:
@@ -27,6 +35,7 @@ def create_service(frames: dict) -> dict:
     return {
         "conn": connection,
         "client": genai.Client(api_key=api_key),
+        "schema": build_schema(frames),
     }
 
 
