@@ -66,10 +66,13 @@ def render_authors_tab(metrics: dict) -> None:
 
 
 def get_chat_messages(iteration: int) -> list:
-    key = f"ask_messages_{iteration}"
-    if key not in st.session_state:
-        st.session_state[key] = []
-    return st.session_state[key]
+    return st.session_state.setdefault(f"ask_messages_{iteration}", [])
+
+
+def show_query_result(message: dict) -> None:
+    st.dataframe(message["result"], hide_index=True)
+    with st.expander("Generated SQL"):
+        st.code(message["sql"], language="sql")
 
 
 def render_chat_history(messages: list) -> None:
@@ -77,37 +80,51 @@ def render_chat_history(messages: list) -> None:
         show_chat_message(message)
 
 
-# def show_chat_message(role: str, content: str) -> None:
-#     with st.chat_message(role):
-#         st.markdown(content)
-
-
 def show_chat_message(message: dict) -> None:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
         if "result" in message:
-            st.dataframe(message["result"], hide_index=True)
-            with st.expander("SQL"):
-                st.code(message["sql"], language="sql")
+            show_query_result(message)
+        if "error" in message:
+            st.error(message["error"])
 
 
 def query_with_spinner(iteration: int, question: str) -> str:
-    data = load_query_service(iteration)
+    service = load_query_service(iteration)
     with st.spinner("Generating and executing SQL"):
-        return run_query(data, question)
+        return run_query(service, question)
+
+
+def make_result_message(sql: str, result: pd.DataFrame) -> dict:
+    return {
+        "role": "assistant",
+        "content": f"Returned {len(result):,} rows",
+        "sql": sql,
+        "result": result,
+    }
+
+
+def make_error_message(error: Exception) -> dict:
+    return {
+        "role": "assistant",
+        "content": "Could not process the query",
+        "error": str(error),
+    }
+
+
+def answer_question(iteration: int, question: str) -> dict:
+    try:
+        return make_result_message(*query_with_spinner(iteration, question))
+    except Exception as e:
+        return make_error_message(e)
 
 
 def handle_question(iteration: int, question: str, messages: list) -> None:
     messages.append({"role": "user", "content": question})
-    show_chat_message(question)
-    try:
-        answer = query_with_spinner(iteration, question)
-    except Exception as exc:
-        st.error("Could not process the query. Try rephrasing it.")
-        st.exception(exc)
-        return
+    show_chat_message(messages[-1])
+    answer = answer_question(iteration, question)
+    messages.append(answer)
     show_chat_message(answer)
-    messages.append({"role": "assistant", "content": answer})
 
 
 def render_ask_tab(iteration: int) -> None:

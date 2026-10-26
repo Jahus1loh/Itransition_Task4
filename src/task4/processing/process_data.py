@@ -18,24 +18,6 @@ def load_data(iteration: int) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]
     return (books_df, orders_df, users_df)
 
 
-def merge_all_df(
-    books_df: pd.DataFrame, orders_df: pd.DataFrame, users_df: pd.DataFrame
-) -> pd.DataFrame:
-    merged_df = orders_df.merge(
-        users_df,
-        on="user_id",
-        how="left",
-        validate="many_to_one",
-    ).merge(
-        books_df,
-        on="book_id",
-        how="left",
-        validate="many_to_one",
-    )
-
-    return merged_df
-
-
 def clean_data(iteration: int) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     books_df, orders_df, users_df = load_data(iteration)
     books_df = clean_books_data(books_df)
@@ -64,5 +46,4 @@ def compute_metrics(iteration: int) -> dict[str, object]:
         "users_df": users_df,
         "orders_df": orders_df,
         "books_df": books_df,
-        "merged_df": merge_all_df(books_df, orders_df, users_df)
     }
