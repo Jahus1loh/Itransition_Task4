@@ -38,6 +38,9 @@ def clean_data(
 
 def compute_metrics(iteration: int) -> dict[str, object]:
     books_df, orders_df, users_df = clean_data(iteration)
+    print(books_df.head())
+    print(books_df.dtypes)
+    books_df.to_csv("books_df.csv")
     best_buyer_df, best_total = find_top_spender_user_ids(users_df, orders_df)
 
     return {
