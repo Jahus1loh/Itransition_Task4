@@ -1,9 +1,16 @@
 import pandas as pd
 import streamlit as st
+from pathlib import Path
+import tomllib
 from processing.nlm_processing.nl_router import build_query_router
+from processing.nlm_processing.duck_db_query import create_service, run_query
 from processing.process_data import compute_metrics
 
 ITERATIONS = range(1, 6)
+
+with Path("src/task4/config/config.toml").open("rb") as f:
+    cfg = tomllib.load(f)
+    table_names = cfg["duck_db"]["table_names"]
 
 
 @st.cache_data
@@ -36,6 +43,13 @@ def load_query_router(iteration: int):
     return build_query_router(frames)
 
 
+@st.cache_resource
+def load_query_service(iteration: int) -> dict:
+    metrics = load_metrics(iteration)
+    frames = {name: metrics[f"{name}_df"] for name in table_names}
+    return create_service(frames)
+
+
 def render_revenue_tab(daily: pd.Series) -> None:
     st.subheader("Top 5 days by revenue")
     st.table(build_top_days_table(daily))
@@ -48,7 +62,6 @@ def render_customers_tab(metrics: dict) -> None:
     left, right = st.columns(2)
     left.metric("Unique users", f"{metrics['n_users']:,}")
     right.metric("Best buyer total spent", f"{metrics['best_buyer_total']:,.2f}")
-    print(records.head())
     st.subheader("Best buyer (with aliases)")
     st.code(str(records["user_id"].astype(int).tolist()), language="python")
     st.dataframe(records, hide_index=True)
@@ -69,19 +82,26 @@ def get_chat_messages(iteration: int) -> list:
 
 def render_chat_history(messages: list) -> None:
     for message in messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+        show_chat_message(message)
 
 
-def show_chat_message(role: str, content: str) -> None:
-    with st.chat_message(role):
-        st.markdown(content)
+# def show_chat_message(role: str, content: str) -> None:
+#     with st.chat_message(role):
+#         st.markdown(content)
+
+def show_chat_message(message: dict) -> None:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+        if "result" in message:
+            st.dataframe(message["result"], hide_index=True)
+            with st.expander("SQL"):
+                st.code(message["sql"], language="sql")
 
 
 def query_with_spinner(iteration: int, question: str) -> str:
-    with st.spinner("Querying your data..."):
-        router = load_query_router(iteration)
-        return str(router.query(question))
+    data = load_query_service(iteration)
+    with st.spinner("Generating and executing SQL"):
+        return run_query(data, question)
 
 
 def handle_question(iteration: int, question: str, messages: list) -> None:

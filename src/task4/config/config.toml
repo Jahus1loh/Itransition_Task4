@@ -6,3 +6,22 @@ path = "src/task4/input_data/STORE$/orders.parquet"
 
 [input_data.csv]
 path = "src/task4/input_data/STORE$/users.csv"
+
+[duck_db]
+query_prompt = """
+    Convert the question into one DuckDB SELECT query.
+
+    $schema
+
+    Rules:
+    - Use only the listed tables and columns.
+    - Never invent column names.
+    - Use unit_price for unit prices, paid_price for recorded payments.
+    - There is no separate book catalog price column.
+    - Count distinct user_id values when counting buyers.
+    - Return SQL only, without Markdown.
+    - Limit row-level results to 100 rows.
+    Question: $question
+    """
+model_name = "gemini-3.8-flash"
+table_names = ["books", "orders", "users"]

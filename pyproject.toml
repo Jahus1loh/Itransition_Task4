@@ -8,10 +8,9 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "duckdb>=1.5.6",
     "fastparquet>=2026.9.0",
-    "llama-index>=0.10.45.post1",
-    "llama-index-experimental>=0.2.0",
-    "llama-index-llms-google-genai>=0.2.6",
+    "google-genai>=1.75.0",
     "llama-index-llms-ollama>=0.2.2",
     "matplotlib>=3.11.2",
     "mistralai>=1,<2",
@@ -21,6 +20,7 @@ dependencies = [
     "pyarrow>=26.0.0",
     "pyyaml>=6.0.3",
     "scipy>=1.18.1",
+    "sqlglot>=30.24.0",
     "streamlit>=1.66.1",
 ]
 
