@@ -1,5 +1,3 @@
-from collections.abc import Sequence
-
 import pandas as pd
 from nameparser import parse
 
@@ -38,10 +36,7 @@ def extract_f_name_and_surname(name: str) -> str:
 
 def fix_names_formatting(author_names: str) -> str:
     authors = author_names.split(",")
-    return sorted(
-        extract_f_name_and_surname(name.strip())
-        for name in authors
-    )
+    return sorted(extract_f_name_and_surname(name.strip()) for name in authors)
 
 
 def normalize_author_names(books_df: pd.DataFrame) -> pd.DataFrame:
