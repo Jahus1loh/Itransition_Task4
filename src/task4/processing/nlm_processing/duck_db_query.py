@@ -89,7 +89,7 @@ def validate_sql_query(sql_query: str):
     ensure_single_query(statements)
     ctes, tables = gather_allowed_tables_and_cte(statements)
     ensure_valid_table_in_query(tables, ctes)
-    query = add_query_limit
+    query = add_query_limit(statements[0])
     return query.sql(dialect="duckdb")
 
 
