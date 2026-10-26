@@ -1,8 +1,8 @@
+import tomllib
+from pathlib import Path
+
 import pandas as pd
 import streamlit as st
-from pathlib import Path
-import tomllib
-from processing.nlm_processing.nl_router import build_query_router
 from processing.nlm_processing.duck_db_query import create_service, run_query
 from processing.process_data import compute_metrics
 
@@ -33,14 +33,6 @@ def build_top_days_table(daily: pd.Series, n: int = 5) -> pd.DataFrame:
 
 def select_iteration() -> int:
     return st.sidebar.selectbox("Store number", list(ITERATIONS))
-
-
-@st.cache_resource
-def load_query_router(iteration: int):
-    metrics = load_metrics(iteration)
-    frames = {name: metrics[f"{name}_df"] for name in ("books", "orders", "users")}
-    frames["merged"] = metrics["merged_df"]
-    return build_query_router(frames)
 
 
 @st.cache_resource
@@ -88,6 +80,7 @@ def render_chat_history(messages: list) -> None:
 # def show_chat_message(role: str, content: str) -> None:
 #     with st.chat_message(role):
 #         st.markdown(content)
+
 
 def show_chat_message(message: dict) -> None:
     with st.chat_message(message["role"]):
