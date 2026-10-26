@@ -99,14 +99,14 @@ def query_with_spinner(iteration: int, question: str) -> str:
 
 def handle_question(iteration: int, question: str, messages: list) -> None:
     messages.append({"role": "user", "content": question})
-    show_chat_message("user", question)
+    show_chat_message(question)
     try:
         answer = query_with_spinner(iteration, question)
     except Exception as exc:
         st.error("Could not process the query. Try rephrasing it.")
         st.exception(exc)
         return
-    show_chat_message("assistant", answer)
+    show_chat_message(answer)
     messages.append({"role": "assistant", "content": answer})
 
 
