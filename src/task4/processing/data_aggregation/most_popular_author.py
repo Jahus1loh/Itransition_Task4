@@ -15,6 +15,9 @@ def join_books_and_orders_df(orders_df: pd.DataFrame, books_df: pd.DataFrame):
 
 
 def group_by_authors(joined_df: pd.DataFrame):
-    joined_df = joined_df.groupby("author")["quantity"].sum()
-    joined_df = joined_df.sort_values(ascending=False)
-    return joined_df
+    joined_df["author"] = joined_df["author"].apply(tuple)
+    return (
+        joined_df.groupby("author")["quantity"]
+        .sum()
+        .sort_values(ascending=False)
+    )
