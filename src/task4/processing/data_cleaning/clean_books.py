@@ -37,13 +37,11 @@ def extract_f_name_and_surname(name: str) -> str:
 
 
 def fix_names_formatting(author_names: str) -> str:
-    fixed_author_names: Sequence[str] = []
-    if not "," in author_names:
-        return extract_f_name_and_surname(author_names)
-
-    for name in author_names.split(","):
-        fixed_author_names.append(extract_f_name_and_surname(name))
-    return ", ".join(sorted(fixed_author_names))
+    authors = author_names.split(",")
+    return sorted(
+        extract_f_name_and_surname(name.strip())
+        for name in authors
+    )
 
 
 def normalize_author_names(books_df: pd.DataFrame) -> pd.DataFrame:
