@@ -73,7 +73,8 @@ def gather_allowed_tables_and_cte(statements):
 
 
 def ensure_valid_table_in_query(tables, ctes):
-    if not tables or not tables in set(table_names) | ctes:
+    allowed = {name.lower() for name in table_names} | ctes
+    if not tables or not tables <= allowed:
         raise ValueError("The query uses non existing table")
 
 
