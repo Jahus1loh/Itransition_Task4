@@ -8,7 +8,8 @@ def clean_books_data(books_df: pd.DataFrame) -> pd.DataFrame:
     books_df = handle_missing_publishers(books_df)
     books_df = normalize_author_names(books_df)
     books_df = rename_books_columns(books_df)
-    books_df.to_csv("books_cleaned.csv")
+    print(books_df.head())
+    print(books_df.dtypes)
     return books_df
 
 
