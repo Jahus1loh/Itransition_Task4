@@ -7,7 +7,6 @@ import pandas as pd
 import sqlglot
 import streamlit as st
 from google import genai
-from google.genai import types
 from sqlglot import exp
 
 with Path("src/task4/config/config.toml").open("rb") as f:
@@ -43,7 +42,7 @@ def generate_sql(service: dict, question: str) -> str:
     final_prompt = prompt.replace("$schema", service["schema"]).replace(
         "$question", question
     )
-    response = genai.Client(api_key=api_key).models.generate_content(
+    response = service["client"].models.generate_content(
         model=model_name,
         contents=final_prompt,
     )
