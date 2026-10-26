@@ -14,7 +14,9 @@ def clean_books_data(books_df: pd.DataFrame) -> pd.DataFrame:
 
 
 def fix_books_column_names(books_df: pd.DataFrame) -> pd.DataFrame:
-    books_df.columns = books_df.columns.str.strip().str.lower().str.replace(":", "")
+    books_df.columns = (
+        books_df.columns.str.strip().str.lower().str.replace(":", "")
+    )
     return books_df
 
 

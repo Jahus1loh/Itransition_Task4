@@ -37,8 +37,12 @@ def extract_price_from_string(unit_price: str) -> str:
 
 def fix_orders_unit_price(orders_df: pd.DataFrame) -> pd.DataFrame:
     orders_df["unit_price"] = orders_df["unit_price"].apply(normalize_cents)
-    orders_df["unit_price"] = orders_df["unit_price"].apply(extract_price_from_string)
-    orders_df["unit_price"] = pd.to_numeric(orders_df["unit_price"], errors="coerce")
+    orders_df["unit_price"] = orders_df["unit_price"].apply(
+        extract_price_from_string
+    )
+    orders_df["unit_price"] = pd.to_numeric(
+        orders_df["unit_price"], errors="coerce"
+    )
 
     return orders_df
 
@@ -50,11 +54,14 @@ def normalize_timestamp_text(raw_timestamp: str) -> str:
 
 
 def parse_timestamp(timestamp: str) -> pd.Timestamp:
-    day_first_dotted_date_pattern = re.compile(r"(?<![\d:])\d{1,2}\.\d{1,2}\.\d{4}")
+    day_first_dotted_date_pattern = re.compile(
+        r"(?<![\d:])\d{1,2}\.\d{1,2}\.\d{4}"
+    )
     timestamp = normalize_timestamp_text(timestamp)
     return pd.Timestamp(
         parser.parse(
-            timestamp, dayfirst=bool(day_first_dotted_date_pattern.search(timestamp))
+            timestamp,
+            dayfirst=bool(day_first_dotted_date_pattern.search(timestamp)),
         )
     )
 
@@ -70,8 +77,7 @@ def add_timestamp_parts(orders_df: pd.DataFrame) -> pd.DataFrame:
     orders_df["day"] = orders_df["timestamp"].dt.day
     orders_df["month"] = orders_df["timestamp"].dt.month
     orders_df["year"] = orders_df["timestamp"].dt.year
-    orders_df["date"] = pd.to_datetime(orders_df[["year","month","day"]])
-
+    orders_df["date"] = pd.to_datetime(orders_df[["year", "month", "day"]])
 
     return orders_df
 

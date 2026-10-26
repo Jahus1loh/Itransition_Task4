@@ -9,12 +9,10 @@ def find_most_popular_author(orders_df, books_df):
 
 def join_books_and_orders_df(orders_df: pd.DataFrame, books_df: pd.DataFrame):
     joined_df = orders_df.merge(
-        books_df,
-        left_on="book_id",
-        right_on="book_id",
-        how="left"
+        books_df, left_on="book_id", right_on="book_id", how="left"
     )
     return joined_df
+
 
 def group_by_authors(joined_df: pd.DataFrame):
     joined_df = joined_df.groupby("author")["quantity"].sum()

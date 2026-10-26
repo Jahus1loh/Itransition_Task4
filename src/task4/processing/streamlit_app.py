@@ -6,11 +6,12 @@ import streamlit as st
 from processing.nlm_processing.duck_db_query import create_service, run_query
 from processing.process_data import compute_metrics
 
-ITERATIONS = range(1, 6)
-
 with Path("src/task4/config/config.toml").open("rb") as f:
     cfg = tomllib.load(f)
     table_names = cfg["duck_db"]["table_names"]
+    no_of_stores = cfg["general"]["number_of_stores"]
+
+iterations = range(1, no_of_stores + 1)
 
 
 @st.cache_data
@@ -32,7 +33,7 @@ def build_top_days_table(daily: pd.Series, n: int = 5) -> pd.DataFrame:
 
 
 def select_iteration() -> int:
-    return st.sidebar.selectbox("Store number", list(ITERATIONS))
+    return st.sidebar.selectbox("Store number", list(iterations))
 
 
 @st.cache_resource
@@ -53,7 +54,9 @@ def render_customers_tab(metrics: dict) -> None:
     records = metrics["best_buyer_records"]
     left, right = st.columns(2)
     left.metric("Unique users", f"{metrics['n_users']:,}")
-    right.metric("Best buyer total spent", f"{metrics['best_buyer_total']:,.2f}")
+    right.metric(
+        "Best buyer total spent", f"{metrics['best_buyer_total']:,.2f}"
+    )
     st.subheader("Best buyer (with aliases)")
     st.code(str(records["user_id"].astype(int).tolist()), language="python")
     st.dataframe(records, hide_index=True)

@@ -6,7 +6,6 @@ import duckdb
 import pandas as pd
 import sqlglot
 import streamlit as st
-from google import genai
 from groq import Groq
 from sqlglot import exp
 
@@ -21,9 +20,12 @@ api_key = st.secrets["GROK_API_KEY"]
 
 def build_schema(frames: dict) -> str:
     columns = [
-        f"{name}: {', '.join(map(str, frames[name].columns))}" for name in table_names
+        f"{name}: {', '.join(map(str, frames[name].columns))}"
+        for name in table_names
     ]
-    joins = "Join orders.book_id = books.book_id; orders.user_id = users.user_id."
+    joins = (
+        "Join orders.book_id = books.book_id; orders.user_id = users.user_id."
+    )
     return "\n".join([*columns, joins])
 
 
@@ -35,28 +37,40 @@ def create_service(frames: dict) -> dict:
     return {
         "conn": connection,
         "client": Groq(api_key=api_key),
-        # "client": genai.Client(api_key=api_key),
         "schema": build_schema(frames),
     }
 
 
-def generate_sql(service: dict, question: str) -> str:
+def get_final_prompt(service: dict[str, object], question: str) -> str:
     final_prompt = prompt.replace("$schema", service["schema"]).replace(
         "$question", question
     )
-    # response = service["client"].models.generate_content(
-    #     model=model_name,
-    #     contents=final_prompt,
-    # )
+    return final_prompt
+
+
+def send_prompt_to_the_model(service: dict[str, object], final_prompt: str):
     response = service["client"].chat.completions.create(
         model=model_name,
         messages=[{"role": "user", "content": final_prompt}],
         temperature=0,
     )
+    return response
+
+
+def ensure_model_returned_sql(response: str):
     if not response.choices[0].message.content:
         raise ValueError("The model didnt return SQL")
+
+
+def generate_sql(service: dict, question: str) -> str:
+    final_prompt = get_final_prompt(service, question)
+    response = send_prompt_to_the_model(service, final_prompt)
+    ensure_model_returned_sql(response)
     return re.sub(
-        r"^```(?:sql)?|```$", "", response.choices[0].message.content.strip(), flags=re.IGNORECASE
+        r"^```(?:sql)?|```$",
+        "",
+        response.choices[0].message.content.strip(),
+        flags=re.IGNORECASE,
     ).strip()
 
 
