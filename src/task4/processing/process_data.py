@@ -1,7 +1,8 @@
 import pandas as pd
-import streamlit as st
 from processing.data_aggregation.daily_revenue import compute_daily_revenue
-from processing.data_aggregation.most_popular_author import find_most_popular_author
+from processing.data_aggregation.most_popular_author import (
+    find_most_popular_author,
+)
 from processing.data_aggregation.top_customer import find_top_spender_user_ids
 from processing.data_aggregation.unique_authors import find_unique_authors_sets
 from processing.data_aggregation.unique_users import find_unique_users
@@ -11,14 +12,18 @@ from processing.data_cleaning.clean_users import clean_users_data
 from processing.load_data import read_csv, read_parquet, read_yaml
 
 
-def load_data(iteration: int) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def load_data(
+    iteration: int,
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     books_df = read_yaml(iteration)
     orders_df = read_parquet(iteration)
     users_df = read_csv(iteration)
     return (books_df, orders_df, users_df)
 
 
-def clean_data(iteration: int) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def clean_data(
+    iteration: int,
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     books_df, orders_df, users_df = load_data(iteration)
     books_df = clean_books_data(books_df)
     orders_df = clean_orders_data(orders_df)
@@ -27,7 +32,6 @@ def clean_data(iteration: int) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame
     books_df.to_csv("cleaned_books.csv")
     orders_df.to_csv("cleaned_orders.csv")
     users_df.to_csv("cleaned_users.csv")
-
 
     return books_df, orders_df, users_df
 

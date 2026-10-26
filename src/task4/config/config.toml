@@ -7,6 +7,10 @@ path = "src/task4/input_data/STORE$/orders.parquet"
 [input_data.csv]
 path = "src/task4/input_data/STORE$/users.csv"
 
+[general]
+number_of_stores = 5
+
+
 [duck_db]
 query_prompt = """
 Generate one DuckDB SELECT statement to answer the question.
@@ -21,6 +25,10 @@ Use orders.unit_price for the price per unit.
 Use orders.paid_price for the recorded amount paid.
 There is no separate price column in books.
 Count buyers with COUNT(DISTINCT orders.user_id).
+One person can have multiple emails, phone numbers, addresses or 
+can have aliased name and be under different user_id.
+The person_id is an id for a single person and can be attached to
+multiple user_id.
 For cheapest and most expensive books, compare average unit_price
 per book unless individual sale prices are explicitly requested.
 Return SQL only, without Markdown.
