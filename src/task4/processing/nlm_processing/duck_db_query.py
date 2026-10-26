@@ -36,7 +36,7 @@ def create_service(frames: dict) -> dict:
         "conn": connection,
         "client": Groq(api_key=api_key),
         # "client": genai.Client(api_key=api_key),
-        "schema": build_schema(frames)
+        "schema": build_schema(frames),
     }
 
 
@@ -44,9 +44,14 @@ def generate_sql(service: dict, question: str) -> str:
     final_prompt = prompt.replace("$schema", service["schema"]).replace(
         "$question", question
     )
-    response = service["client"].models.generate_content(
+    # response = service["client"].models.generate_content(
+    #     model=model_name,
+    #     contents=final_prompt,
+    # )
+    response = service["client"].chat.completions.create(
         model=model_name,
-        contents=final_prompt,
+        messages=[{"role": "user", "content": final_prompt}],
+        temperature=0,
     )
     if not response.text:
         raise ValueError("The model didnt return SQL")
