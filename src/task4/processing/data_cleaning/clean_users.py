@@ -36,7 +36,6 @@ def extract_f_name_and_surname(name: str) -> str:
 
 def fix_names_formatting(users_df: pd.DataFrame) -> pd.DataFrame:
     users_df["name"] = users_df["name"].apply(extract_f_name_and_surname)
-
     return users_df
 
 
@@ -56,12 +55,10 @@ def buildEdges(
     users_df: pd.DataFrame, cols: pd.Index
 ) -> tuple[Sequence[int], Sequence[int]]:
     source, dest = [], []
-
     for comb in combinations(cols, len(cols) - 1):
         for indices in users_df.groupby(list(comb)).groups.values():
             source.extend(indices[1:])
             dest.extend([indices[0]] * (len(indices) - 1))
-
     return source, dest
 
 

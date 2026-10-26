@@ -36,14 +36,14 @@ def extract_price_from_string(unit_price: str) -> str:
 
 
 def fix_orders_unit_price(orders_df: pd.DataFrame) -> pd.DataFrame:
-    orders_df["unit_price"] = orders_df["unit_price"].apply(normalize_cents)
-    orders_df["unit_price"] = orders_df["unit_price"].apply(
-        extract_price_from_string
+    orders_df["unit_price"] = (
+        orders_df["unit_price"]
+        .apply(normalize_cents)
+        .apply(extract_price_from_string)
     )
     orders_df["unit_price"] = pd.to_numeric(
         orders_df["unit_price"], errors="coerce"
     )
-
     return orders_df
 
 
@@ -68,7 +68,6 @@ def parse_timestamp(timestamp: str) -> pd.Timestamp:
 
 def fix_timestamp_formatting(orders_df: pd.DataFrame) -> pd.DataFrame:
     orders_df["timestamp"] = orders_df["timestamp"].map(parse_timestamp)
-
     return orders_df
 
 
@@ -78,7 +77,6 @@ def add_timestamp_parts(orders_df: pd.DataFrame) -> pd.DataFrame:
     orders_df["month"] = orders_df["timestamp"].dt.month
     orders_df["year"] = orders_df["timestamp"].dt.year
     orders_df["date"] = pd.to_datetime(orders_df[["year", "month", "day"]])
-
     return orders_df
 
 
