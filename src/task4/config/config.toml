@@ -27,5 +27,6 @@ Return SQL only, without Markdown.
 
 Question: $question
 """
-model_name = "gemini-3.8-flash"
+# model_name = "gemini-3.8-flash"
+model_name = "openai/gpt-oss-120b"
 table_names = ["books", "orders", "users"]

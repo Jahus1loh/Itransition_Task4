@@ -7,6 +7,7 @@ import pandas as pd
 import sqlglot
 import streamlit as st
 from google import genai
+from groq import Groq
 from sqlglot import exp
 
 with Path("src/task4/config/config.toml").open("rb") as f:
@@ -15,7 +16,7 @@ with Path("src/task4/config/config.toml").open("rb") as f:
     model_name = cfg["duck_db"]["model_name"]
     table_names = cfg["duck_db"]["table_names"]
 
-api_key = st.secrets["GEMINI_API_KEY"]
+api_key = st.secrets["GROK_API_KEY"]
 
 
 def build_schema(frames: dict) -> str:
@@ -33,8 +34,9 @@ def create_service(frames: dict) -> dict:
     connection.execute("SET enable_external_access = false")
     return {
         "conn": connection,
-        "client": genai.Client(api_key=api_key),
-        "schema": build_schema(frames),
+        "client": Groq(api_key=api_key),
+        # "client": genai.Client(api_key=api_key),
+        "schema": build_schema(frames)
     }
 
 
