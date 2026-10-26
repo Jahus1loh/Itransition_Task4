@@ -9,19 +9,23 @@ path = "src/task4/input_data/STORE$/users.csv"
 
 [duck_db]
 query_prompt = """
-    Convert the question into one DuckDB SELECT query.
+Generate one DuckDB SELECT statement to answer the question.
 
-    $schema
+Available tables and columns:
+$schema
 
-    Rules:
-    - Use only the listed tables and columns.
-    - Never invent column names.
-    - Use unit_price for unit prices, paid_price for recorded payments.
-    - There is no separate book catalog price column.
-    - Count distinct user_id values when counting buyers.
-    - Return SQL only, without Markdown.
-    - Limit row-level results to 100 rows.
-    Question: $question
-    """
+Join orders.book_id to books.book_id.
+Join orders.user_id to users.user_id.
+Use only the listed columns. Never invent column names.
+Use orders.unit_price for the price per unit.
+Use orders.paid_price for the recorded amount paid.
+There is no separate price column in books.
+Count buyers with COUNT(DISTINCT orders.user_id).
+For cheapest and most expensive books, compare average unit_price
+per book unless individual sale prices are explicitly requested.
+Return SQL only, without Markdown.
+
+Question: $question
+"""
 model_name = "gemini-3.8-flash"
 table_names = ["books", "orders", "users"]
