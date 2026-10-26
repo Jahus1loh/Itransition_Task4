@@ -34,7 +34,7 @@ def extract_f_name_and_surname(name: str) -> str:
     return parsed_name.given + " " + parsed_name.family
 
 
-def fix_names_formatting(author_names: str) -> str:
+def fix_names_formatting(author_names: str) -> list[str]:
     authors = author_names.split(",")
     return sorted(extract_f_name_and_surname(name.strip()) for name in authors)
 

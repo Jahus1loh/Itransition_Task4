@@ -29,6 +29,11 @@ One person can have multiple emails, phone numbers, addresses or
 can have aliased name and be under different user_id.
 The person_id is an id for a single person and can be attached to
 multiple user_id.
+books.author is a list of strings (VARCHAR[]), not a VARCHAR string.
+Count authors per book with array_length(author).
+For statistics about individual authors, expand the list using
+UNNEST(books.author) and group by the individual author name.
+Never use STR_SPLIT or REGEXP_SPLIT_TO_ARRAY on books.author.
 For cheapest and most expensive books, compare average unit_price
 per book unless individual sale prices are explicitly requested.
 Return SQL only, without Markdown.
