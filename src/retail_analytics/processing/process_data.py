@@ -28,11 +28,6 @@ def clean_data(
     books_df = clean_books_data(books_df)
     orders_df = clean_orders_data(orders_df)
     users_df = clean_users_data(users_df)
-
-    books_df.to_csv("cleaned_books.csv")
-    orders_df.to_csv("cleaned_orders.csv")
-    users_df.to_csv("cleaned_users.csv")
-
     return books_df, orders_df, users_df
 
 
