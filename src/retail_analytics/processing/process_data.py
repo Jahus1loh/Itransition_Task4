@@ -28,11 +28,19 @@ def clean_data(
     books_df = clean_books_data(books_df)
     orders_df = clean_orders_data(orders_df)
     users_df = clean_users_data(users_df)
+
+    books_df.to_csv("cleaned_books.csv")
+    orders_df.to_csv("cleaned_orders.csv")
+    users_df.to_csv("cleaned_users.csv")
+
     return books_df, orders_df, users_df
 
 
 def compute_metrics(iteration: int) -> dict[str, object]:
     books_df, orders_df, users_df = clean_data(iteration)
+    print(books_df.head())
+    print(books_df.dtypes)
+    books_df.to_csv("books_df.csv")
     best_buyer_df, best_total = find_top_spender_user_ids(users_df, orders_df)
 
     return {
