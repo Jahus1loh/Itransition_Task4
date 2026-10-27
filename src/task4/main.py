@@ -1,4 +1,4 @@
-from retail_analytics.processing.streamlit_app import render_dashboard
+from task4.processing.streamlit_app import render_dashboard
 
 
 def main() -> None:
